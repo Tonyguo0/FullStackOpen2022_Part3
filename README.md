@@ -1,8 +1,8 @@
 # FullStackOpen2022_Part3
 ## Excercises
 - [x] exercise 3.1
-- [ ] exercise 3.2
-- [ ] exercise 3.3
+- [x] exercise 3.2
+- [x] exercise 3.3
 - [ ] exercise 3.4
 - [ ] exercise 3.5
 - [ ] exercise 3.6
