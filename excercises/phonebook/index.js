@@ -1,9 +1,11 @@
 const { response } = require("express");
 const express = require("express");
 const app = express();
+const morgan = require("morgan");
 // parses incoming JSON requests and puts the parsed data in the request.body
 app.use(express.json());
 
+app.use(morgan("tiny"));
 let persons = [
   {
     id: 1,
@@ -69,11 +71,18 @@ app.post("/api/persons", (req, res) => {
   const body = req.body;
 
   if (!body.name || !body.number) {
-    return res.status(404).json({ status: 404, message:"name or number in the request is missing"});
+    return res
+      .status(404)
+      .json({
+        status: 404,
+        message: "name or number in the request is missing",
+      });
   }
 
   if (persons.find((p) => p.name === body.name)) {
-    return res.status(409).json({ status:409, message:"cannot add the same name again"});
+    return res
+      .status(409)
+      .json({ status: 409, message: "cannot add the same name again" });
   }
 
   const person = {
