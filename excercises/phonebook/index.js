@@ -5,7 +5,6 @@ const morgan = require("morgan");
 // parses incoming JSON requests and puts the parsed data in the request.body
 app.use(express.json());
 
-app.use(morgan("tiny"));
 let persons = [
   {
     id: 1,
@@ -28,6 +27,28 @@ let persons = [
     number: "39-23-6423122",
   },
 ];
+
+const morganSetPostToken = (persons1) => {
+  morgan.token("post", (req, res) => {
+    const body = req.body;
+
+    if (!req.body.name || !req.body.number) {
+      console.log("if", body.name, body.number);
+      return;
+    } else if (persons1.find((p) => p.name === req.body.name)) {
+      console.log("else persons find", body.name, body.number);
+
+      return;
+    } else {
+      console.log("else", body.name, body.number);
+      return JSON.stringify({ name: req.body.name, number: req.body.number });
+    }
+  });
+};
+
+app.use(
+  morgan(":method :url :status :res[content-length] - :response-time ms :post")
+);
 
 app.get("/api/persons", (req, res) => {
   res.json(persons);
@@ -69,14 +90,14 @@ const getRandomInt = (minimum, maximum) => {
 
 app.post("/api/persons", (req, res) => {
   const body = req.body;
+  
+  morganSetPostToken(persons);
 
   if (!body.name || !body.number) {
-    return res
-      .status(404)
-      .json({
-        status: 404,
-        message: "name or number in the request is missing",
-      });
+    return res.status(404).json({
+      status: 404,
+      message: "name or number in the request is missing",
+    });
   }
 
   if (persons.find((p) => p.name === body.name)) {
@@ -84,14 +105,13 @@ app.post("/api/persons", (req, res) => {
       .status(409)
       .json({ status: 409, message: "cannot add the same name again" });
   }
-
   const person = {
     id: getRandomInt(0, Number.MAX_SAFE_INTEGER),
     name: body.name,
     number: body.number,
   };
 
-  persons = [...persons, person];
+  persons = persons.concat(person);
   res.status(204).json(person);
 });
 

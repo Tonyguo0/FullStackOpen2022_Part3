@@ -6,8 +6,8 @@
 - [x] exercise 3.4
 - [x] exercise 3.5
 - [x] exercise 3.6
-- [ ] exercise 3.7
-- [ ] exercise 3.8
+- [x] exercise 3.7
+- [x] exercise 3.8
 - [ ] exercise 3.9
 - [ ] exercise 3.10
 - [ ] exercise 3.11
