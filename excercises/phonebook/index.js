@@ -24,6 +24,7 @@ const morganSetPostToken = (persons1) => {
     }
   });
 };
+
 morgan.token("post", (req, res) => {
   return;
 });
