@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-
+const cor = require("cor");
 app.use(express.json());
 const requestLogger = (request, response, next) => {
   console.log("Method: ", request.method);
@@ -11,6 +11,7 @@ const requestLogger = (request, response, next) => {
 };
 
 app.use(requestLogger);
+app.use(cors())
 // const unknownEndpoint = (request, response) => {
 //   response.status(404).send({ error: "unknown endpoint" });
 // };
