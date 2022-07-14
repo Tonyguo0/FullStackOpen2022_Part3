@@ -45,7 +45,9 @@ const morganSetPostToken = (persons1) => {
     }
   });
 };
-
+morgan.token("post", (req, res) => {
+  return;
+});
 app.use(
   morgan(":method :url :status :res[content-length] - :response-time ms :post")
 );
@@ -90,7 +92,7 @@ const getRandomInt = (minimum, maximum) => {
 
 app.post("/api/persons", (req, res) => {
   const body = req.body;
-  
+
   morganSetPostToken(persons);
 
   if (!body.name || !body.number) {
