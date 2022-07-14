@@ -2,8 +2,34 @@ const { response } = require("express");
 const express = require("express");
 const app = express();
 const morgan = require("morgan");
+const cors = require("cors");
 // parses incoming JSON requests and puts the parsed data in the request.body
 app.use(express.json());
+app.use(cors());
+
+const morganSetPostToken = (persons1) => {
+  morgan.token("post", (req, res) => {
+    const body = req.body;
+
+    if (!req.body.name || !req.body.number) {
+      // console.log("if", body.name, body.number);
+      return;
+    } else if (persons1.find((p) => p.name === req.body.name)) {
+      // console.log("else persons find", body.name, body.number);
+
+      return;
+    } else {
+      // console.log("else", body.name, body.number);
+      return JSON.stringify({ name: req.body.name, number: req.body.number });
+    }
+  });
+};
+morgan.token("post", (req, res) => {
+  return;
+});
+app.use(
+  morgan(":method :url :status :res[content-length] - :response-time ms :post")
+);
 
 let persons = [
   {
@@ -27,30 +53,6 @@ let persons = [
     number: "39-23-6423122",
   },
 ];
-
-const morganSetPostToken = (persons1) => {
-  morgan.token("post", (req, res) => {
-    const body = req.body;
-
-    if (!req.body.name || !req.body.number) {
-      console.log("if", body.name, body.number);
-      return;
-    } else if (persons1.find((p) => p.name === req.body.name)) {
-      console.log("else persons find", body.name, body.number);
-
-      return;
-    } else {
-      console.log("else", body.name, body.number);
-      return JSON.stringify({ name: req.body.name, number: req.body.number });
-    }
-  });
-};
-morgan.token("post", (req, res) => {
-  return;
-});
-app.use(
-  morgan(":method :url :status :res[content-length] - :response-time ms :post")
-);
 
 app.get("/api/persons", (req, res) => {
   res.json(persons);
@@ -114,7 +116,7 @@ app.post("/api/persons", (req, res) => {
   };
 
   persons = persons.concat(person);
-  res.status(204).json(person);
+  res.status(200).json(person);
 });
 
 const PORT = 3001;
