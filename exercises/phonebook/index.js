@@ -6,6 +6,7 @@ const cors = require("cors");
 // parses incoming JSON requests and puts the parsed data in the request.body
 app.use(express.json());
 app.use(cors());
+app.use(express.static("build"));
 
 const morganSetPostToken = (persons1) => {
   morgan.token("post", (req, res) => {
