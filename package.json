@@ -7,16 +7,18 @@
     "start": "node exercises/phonebook/index.js",
     "dev": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "buildui": "shx rm -rf build && cd ../FullStackOpen2022_Part2/practices/part2-notes/ && npm run build && cp -r build ../../../FullStackOpen2022_Part3/",
+    "builduipractice": "shx rm -rf build && cd ../FullStackOpen2022_Part2/practices/part2-notes/ && npm run build && cp -r build ../../../FullStackOpen2022_Part3/",
+    "builduiexercise": "shx rm -rf build && cd ../FullStackOpen2022_Part2/exercises/phonebook && npm run build && cp -r build ../../../FullStackOpen2022_Part3/",
     "deploy": "git push heroku main",
-    "deployfull": "npm run buildui && git add . && git commit -m uibuild && npm run deploy",
+    "deployfull": "npm run builduiexercise && git add . && git commit -m uibuild && npm run deploy",
     "logs:prod": "heroku logs --tail"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "cors": "^2.8.5",
-    "express": "^4.18.1"
+    "express": "^4.18.1",
+    "morgan": "^1.10.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.18",
