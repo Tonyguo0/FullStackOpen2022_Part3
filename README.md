@@ -8,8 +8,8 @@
 - [x] exercise 3.6
 - [x] exercise 3.7
 - [x] exercise 3.8
-- [ ] exercise 3.9
-- [ ] exercise 3.10
+- [x] exercise 3.9
+- [x] exercise 3.10
 - [ ] exercise 3.11
 - [ ] exercise 3.12
 - [ ] exercise 3.13
@@ -24,5 +24,6 @@
 - [ ] exercise 3.22
 
 
-## Set-up
+## Web-App Heroku link
+- https://elegant-moliere-57462.herokuapp.com/
 # .env
