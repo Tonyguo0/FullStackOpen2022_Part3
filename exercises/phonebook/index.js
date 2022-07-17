@@ -25,7 +25,6 @@ const morganSetPostToken = (persons1) => {
   });
 };
 
-
 morgan.token("post", (req, res) => {
   return;
 });
@@ -121,9 +120,7 @@ app.post("/api/persons", (req, res) => {
   res.status(200).json(person);
 });
 
-
-
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 
 app.listen(PORT, () => {
   console.log("listening on port 3001");
