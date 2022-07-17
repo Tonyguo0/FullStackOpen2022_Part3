@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node excercises/phonebook/index.js",
+    "start": "node exercises/phonebook/index.js",
     "dev": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "buildui": "shx rm -rf build && cd ../FullStackOpen2022_Part2/practices/part2-notes/ && npm run build && cp -r build ../../../FullStackOpen2022_Part3/",
