@@ -21,6 +21,9 @@ app.use(cors());
 
 // app.use(unknownEndpoint);
 
+
+// MongoDB database: mongodb+srv://tgo:<password>@fullstackopen-tony.3qsjiry.mongodb.net/?retryWrites=true&w=majority
+
 let notes = [
   {
     id: 1,

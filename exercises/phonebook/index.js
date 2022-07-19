@@ -87,10 +87,10 @@ app.delete("/api/persons/:id", (req, res) => {
 const getRandomInt = (minimum, maximum) => {
   const min = Math.ceil(minimum);
   const max = Math.floor(maximum);
-  console.log(min, max);
+  // console.log(min, max);
   // The +min makes it so that the value is at least mininum value
   const result = Math.floor(Math.random() * (max - min) + min);
-  console.log(result);
+  // console.log(result);
   return result;
 };
 
