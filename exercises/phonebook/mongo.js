@@ -24,21 +24,27 @@ if (process.argv.length < 3) {
   );
   return;
 }
-
+// console.log("random1");
 const password = process.argv[2];
-
-const url = `mongodb+srv://tgo:${password}@fullstackopen-tony.3qsjiry.mongodb.net/phonebook?retryWrites=true&w=majority`;
+const url = `mongodb+srv://tgo:${password}@fullstackopen-tony.3qsjiry.mongodb.net/Phonebook?retryWrites=true&w=majority`;
+// const url = `mongodb://tgo:${password}@ac-qcn4pfb-shard-00-00.3qsjiry.mongodb.net:27017,ac-qcn4pfb-shard-00-01.3qsjiry.mongodb.net:27017,ac-qcn4pfb-shard-00-02.3qsjiry.mongodb.net:27017/Phonebook?ssl=true&replicaSet=atlas-l55oxn-shard-0&authSource=admin&retryWrites=true&w=majority`;
+// console.log("random2");
 
 const phonebookSchema = new mongoose.Schema({
   name: String,
   number: String,
 });
+// console.log("random3");
 
 const Phonebook = mongoose.model("person", phonebookSchema);
+// console.log("random4");
 
 mongoose.connect(url);
+// console.log("random5");
 
 if (process.argv.length === 3) {
+  // console.log("random6");
+
   Phonebook.find({}).then((result) => {
     console.log(`phonebook:`);
     result.forEach((phonebook) => {
