@@ -1,1 +1,1 @@
-web: node exercises/phonebook/index.js
+web: node practices/part3_backend/index.js
