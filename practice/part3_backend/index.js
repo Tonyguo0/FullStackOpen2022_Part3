@@ -1,12 +1,12 @@
 /**
  * REMEMBER TO ADD ENVIRONTMENT VAIRABLEES TO HEROKU
- * VIA: 
+ * VIA:
  * DASHBOARD Or
  * heroku config:set MONGODB_URI='mongodb+srv://fullstack:<password>@cluster0.o1opl.mongodb.net/noteApp?retryWrites=true&w=majority'
  * heroku config:set PORT=''
  */
 
-require('dotenv').config()
+require("dotenv").config();
 
 const express = require("express");
 const app = express();
@@ -33,7 +33,6 @@ app.use(cors());
 
 // MongoDB database: mongodb+srv://tgo:<password>@fullstackopen-tony.3qsjiry.mongodb.net/?retryWrites=true&w=majority
 
-
 let notes = [
   {
     id: 1,
@@ -55,7 +54,7 @@ let notes = [
   },
 ];
 
-const Note = require("./models/note")
+const Note = require("./models/note");
 app.get("/", (request, response) => {
   response.send("<h1>Hello world!!!</h1>");
 });
@@ -67,11 +66,10 @@ app.get("/api/notes", (request, response) => {
 });
 
 app.get("/api/notes/:id", (request, response) => {
-  const id = Number(request.params.id);
+  const id = request.params.id;
   console.log(id);
-  const note = notes.find((note) => {
-    // console.log(note.id, typeof note.id, id, typeof id, note.id === id);
-    return note.id === id;
+  Note.findById(id).then((note) => {
+    response.json(note);
   });
   console.log(note);
   if (note) {
@@ -98,22 +96,25 @@ app.post("/api/notes", (request, response) => {
   // request.body has the supposed new json request object note that needs to be added using post
   const body = request.body;
 
-  if (!body.content) {
+  if (body.content === undefined) {
     return response.status(400).json({ error: "content missing" });
   }
 
-  const note = {
+  const note = new Note({
     content: body.content,
     important: body.important || false,
     date: new Date(),
-    id: generateId(),
-  };
+  });
+
+  note.save().then((savedNote) => {
+    response.json(savedNote);
+  });
 
   notes = notes.concat(note);
   response.json(note);
 });
 
-const PORT = process.env.PORT
+const PORT = process.env.PORT;
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
