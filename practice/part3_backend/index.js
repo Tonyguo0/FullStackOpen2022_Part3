@@ -106,12 +106,11 @@ app.post("/api/notes", (request, response) => {
     date: new Date(),
   });
 
+
   note.save().then((savedNote) => {
     response.json(savedNote);
   });
 
-  notes = notes.concat(note);
-  response.json(note);
 });
 
 const PORT = process.env.PORT;
