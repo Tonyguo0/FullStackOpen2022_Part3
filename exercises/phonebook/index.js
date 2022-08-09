@@ -3,11 +3,13 @@ const express = require("express");
 const app = express();
 const morgan = require("morgan");
 const cors = require("cors");
+require("dotenv").config();
 // parses incoming JSON requests and puts the parsed data in the request.body
 app.use(express.json());
+// enable cross origin resource using from frontend to backend
 app.use(cors());
 app.use(express.static("build"));
-
+// import using dotenv file
 const morganSetPostToken = (persons1) => {
   morgan.token("post", (req, res) => {
     const body = req.body;
@@ -56,18 +58,31 @@ let persons = [
   },
 ];
 
+const Phonebook = require("./model/phonebook");
+
 app.get("/api/persons", (req, res) => {
-  res.json(persons);
+  // res.json(persons);
+  Phonebook.find({}).then((person) => {
+    res.json(person);
+  });
 });
 
 app.get("/api/persons/:id", (req, res) => {
-  const id = Number(req.params.id);
-  const personObj = persons.find((person) => person.id === id);
-  if (personObj) res.json(personObj);
-  else {
-    res.statusMessage = `person with id ${id} cannot be found`;
-    res.status(404).end();
-  }
+  const id = req.params.id;
+
+  Phonebook.findById(id).then((person) => {
+    if (person) res.json(person);
+    else {
+      res.statusMessage = `person with id ${id} can't be found`;
+      res.status(404).end;
+    }
+  });
+  // const personObj = persons.find((person) => person.id === id);
+  // if (personObj) res.json(personObj);
+  // else {
+  //   res.statusMessage = `person with id ${id} cannot be found`;
+  //   res.status(404).end();
+  // }
 });
 
 app.get("/info", (req, res) => {
