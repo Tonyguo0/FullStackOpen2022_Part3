@@ -13,7 +13,7 @@
 - [x] exercise 3.11
 - [x] exercise 3.12
 - [x] exercise 3.13
-- [ ] exercise 3.14
+- [x] exercise 3.14
 - [ ] exercise 3.15
 - [ ] exercise 3.16
 - [ ] exercise 3.17

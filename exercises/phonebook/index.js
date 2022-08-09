@@ -9,17 +9,15 @@ app.use(express.json());
 // enable cross origin resource using from frontend to backend
 app.use(cors());
 app.use(express.static("build"));
-// import using dotenv file
+
+const Phonebook = require("./model/phonebook");
+// using Morgan to set a token functionality for the middleware to work
 const morganSetPostToken = (persons1) => {
   morgan.token("post", (req, res) => {
     const body = req.body;
 
     if (!req.body.name || !req.body.number) {
       // console.log("if", body.name, body.number);
-      return;
-    } else if (persons1.find((p) => p.name === req.body.name)) {
-      // console.log("else persons find", body.name, body.number);
-
       return;
     } else {
       // console.log("else", body.name, body.number);
@@ -58,8 +56,6 @@ let persons = [
   },
 ];
 
-const Phonebook = require("./model/phonebook");
-
 app.get("/api/persons", (req, res) => {
   // res.json(persons);
   Phonebook.find({}).then((person) => {
@@ -85,6 +81,7 @@ app.get("/api/persons/:id", (req, res) => {
   // }
 });
 
+// shows info for the phonebook database
 app.get("/info", (req, res) => {
   res.send(
     `<div>Phone book has info for ${
@@ -112,7 +109,12 @@ const getRandomInt = (minimum, maximum) => {
 app.post("/api/persons", (req, res) => {
   const body = req.body;
 
-  morganSetPostToken(persons);
+  morganSetPostToken(
+    Phonebook.find({}).then((people) => {
+      // console.log(people);
+      return people;
+    })
+  );
 
   if (!body.name || !body.number) {
     return res.status(404).json({
@@ -121,19 +123,14 @@ app.post("/api/persons", (req, res) => {
     });
   }
 
-  if (persons.find((p) => p.name === body.name)) {
-    return res
-      .status(409)
-      .json({ status: 409, message: "cannot add the same name again" });
-  }
-  const person = {
-    id: getRandomInt(0, Number.MAX_SAFE_INTEGER),
+  const person = new Phonebook({
+    // id: getRandomInt(0, Number.MAX_SAFE_INTEGER),
     name: body.name,
     number: body.number,
-  };
-
-  persons = persons.concat(person);
-  res.status(200).json(person);
+  });
+  person.save().then((p) => {
+    res.json(p);
+  });
 });
 
 const PORT = process.env.PORT || 3001;
