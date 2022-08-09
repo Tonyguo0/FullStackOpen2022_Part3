@@ -68,16 +68,19 @@ app.get("/api/notes", (request, response) => {
 app.get("/api/notes/:id", (request, response) => {
   const id = request.params.id;
   console.log(id);
-  Note.findById(id).then((note) => {
-    response.json(note);
-  });
-  console.log(note);
-  if (note) {
-    response.json(note);
-  } else {
-    response.statusMessage = `resource note with id ${id} can't be found`;
-    response.status(404).end();
-  }
+  Note.findById(id)
+    .then((note) => {
+      if (note) {
+        response.json(note);
+      } else {
+        response.statusMessage = `resource note with id ${id} can't be found`;
+        response.status(404).end();
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+      response.status(500).end();
+    });
 });
 
 app.delete("/api/notes/:id", (request, response) => {
@@ -106,11 +109,9 @@ app.post("/api/notes", (request, response) => {
     date: new Date(),
   });
 
-
   note.save().then((savedNote) => {
     response.json(savedNote);
   });
-
 });
 
 const PORT = process.env.PORT;
