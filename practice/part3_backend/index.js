@@ -12,8 +12,7 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 
-app.use(express.json());
-app.use(express.static("build"));
+const Note = require("./models/note");
 
 const requestLogger = (request, response, next) => {
   console.log("Method: ", request.method);
@@ -23,15 +22,10 @@ const requestLogger = (request, response, next) => {
   next();
 };
 
-app.use(requestLogger);
 app.use(cors());
-// const unknownEndpoint = (request, response) => {
-//   response.status(404).send({ error: "unknown endpoint" });
-// };
-
-// app.use(unknownEndpoint);
-
-// MongoDB database: mongodb+srv://tgo:<password>@fullstackopen-tony.3qsjiry.mongodb.net/?retryWrites=true&w=majority
+app.use(express.static("build"));
+app.use(express.json());
+app.use(requestLogger);
 
 let notes = [
   {
@@ -54,7 +48,6 @@ let notes = [
   },
 ];
 
-const Note = require("./models/note");
 app.get("/", (request, response) => {
   response.send("<h1>Hello world!!!</h1>");
 });
@@ -65,7 +58,7 @@ app.get("/api/notes", (request, response) => {
   });
 });
 
-app.get("/api/notes/:id", (request, response) => {
+app.get("/api/notes/:id", (request, response, next) => {
   const id = request.params.id;
   console.log(id);
   Note.findById(id)
@@ -77,23 +70,37 @@ app.get("/api/notes/:id", (request, response) => {
         response.status(404).end();
       }
     })
-    .catch((error) => {
-      console.log(error);
-      response.status(500).end();
-    });
+    .catch((error) => next(error));
 });
 
-app.delete("/api/notes/:id", (request, response) => {
-  const id = Number(request.params.id);
-  notes = notes.filter((note) => note.id !== id);
-  console.log(notes);
-  response.status(204).end();
+app.delete("/api/notes/:id", (request, response, next) => {
+  const id = request.params.id;
+  Note.findByIdAndRemove(id)
+    .then((result) => {
+      if (result) response.status(204).end();
+      else {
+        response
+          .status(404)
+          .send({ error: `resource note with id ${id} can't be found` });
+      }
+    })
+    .catch((error) => next(error));
 });
 
-const generateId = () => {
-  const maxId = notes.length > 0 ? Math.max(...notes.map((n) => n.id)) : 0;
-  return maxId + 1;
-};
+app.put("/api/notes/:id", (request, response, next) => {
+  const body = request.body;
+  const note = {
+    content: body.content,
+    important: body.important,
+  };
+  console.log(request.params.id)
+  Note.findByIdAndUpdate(request.params.id, note, { new: true })
+    .then((updatedNote) => {
+      console.log(updatedNote);
+      response.json(updatedNote);
+    })
+    .catch((error) => {console.log(error)});
+});
 
 app.post("/api/notes", (request, response) => {
   // request.body has the supposed new json request object note that needs to be added using post
@@ -113,6 +120,26 @@ app.post("/api/notes", (request, response) => {
     response.json(savedNote);
   });
 });
+
+const unknownEndpoint = (request, response) => {
+  response.status(404).send({ error: "unknown endpoint" });
+};
+
+// handler of requests with unknown endpoint
+app.use(unknownEndpoint);
+
+const errorHandler = (error, request, response, next) => {
+  console.error(error);
+  // console.log(error.name);
+  if (error.name === "CastError") {
+    return response.status(400).send({ error: "malformatted id" });
+  }
+
+  next(error);
+};
+
+// handler of requests with result to errors
+app.use(errorHandler);
 
 const PORT = process.env.PORT;
 
