@@ -91,9 +91,18 @@ app.get("/info", (req, res) => {
 });
 
 app.delete("/api/persons/:id", (req, res) => {
-  const id = Number(req.params.id);
-  persons = persons.filter((person) => person.id !== id);
-  res.status(204).end();
+  const id = req.params.id;
+  Phonebook.findByIdAndRemove(id)
+    .then((person) => {
+      if (person) {
+        return res.status(204).json(person);
+      } else {
+        return res.status(404).send({ error: `can't find person id: ${id}` });
+      }
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 });
 
 const getRandomInt = (minimum, maximum) => {
