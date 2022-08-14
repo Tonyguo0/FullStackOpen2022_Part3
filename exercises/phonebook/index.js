@@ -4,14 +4,7 @@ const app = express();
 const morgan = require("morgan");
 const cors = require("cors");
 require("dotenv").config();
-// parses incoming JSON requests and puts the parsed data in the request.body
-app.use(express.json());
-// enable cross origin resource using from frontend to backend
-app.use(cors());
-app.use(express.static("build"));
 
-const Phonebook = require("./model/phonebook");
-// using Morgan to set a token functionality for the middleware to work
 const morganSetPostToken = (persons1) => {
   morgan.token("post", (req, res) => {
     const body = req.body;
@@ -29,9 +22,19 @@ const morganSetPostToken = (persons1) => {
 morgan.token("post", (req, res) => {
   return;
 });
+
 app.use(
   morgan(":method :url :status :res[content-length] - :response-time ms :post")
 );
+
+// parses incoming JSON requests and puts the parsed data in the request.body
+app.use(express.json());
+// enable cross origin resource using from frontend to backend
+app.use(cors());
+app.use(express.static("build"));
+
+const Phonebook = require("./model/phonebook");
+// using Morgan to set a token functionality for the middleware to work
 
 let persons = [
   {
@@ -90,7 +93,7 @@ app.get("/info", (req, res) => {
   );
 });
 
-app.delete("/api/persons/:id", (req, res) => {
+app.delete("/api/persons/:id", (req, res, next) => {
   const id = req.params.id;
   Phonebook.findByIdAndRemove(id)
     .then((person) => {
@@ -101,7 +104,7 @@ app.delete("/api/persons/:id", (req, res) => {
       }
     })
     .catch((err) => {
-      console.log(err);
+      next(err);
     });
 });
 
@@ -142,7 +145,34 @@ app.post("/api/persons", (req, res) => {
   });
 });
 
-const PORT = process.env.PORT || 3001;
+app.put("/api/persons/:id", (req, res, next) => {
+  const id = req.params.id;
+  const body = req.body;
+
+  const person = { name: body.name, number: body.number };
+
+  Phonebook.findByIdAndUpdate(id, person, { new: true })
+    .then((p) => {
+      console.log(p);
+      res.status(204).send(p);
+    })
+    .catch((error) => {
+      next(error);
+    });
+});
+
+const errorHandler = (error, request, response, next) => {
+  console.log(error.name);
+  if (error.name === "CastError") {
+    response
+      .status(400)
+      .send({ error: `malformatted ID error: ${error.message}` });
+  }
+  next(error);
+};
+app.use(errorHandler);
+
+const PORT = process.env.PORT;
 
 app.listen(PORT, () => {
   console.log("listening on port 3001");
