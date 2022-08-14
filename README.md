@@ -17,7 +17,7 @@
 - [x] exercise 3.15
 - [x] exercise 3.16
 - [x] exercise 3.17
-- [ ] exercise 3.18
+- [x] exercise 3.18
 - [ ] exercise 3.19
 - [ ] exercise 3.20
 - [ ] exercise 3.21

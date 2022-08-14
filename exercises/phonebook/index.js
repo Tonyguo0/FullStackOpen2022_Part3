@@ -85,12 +85,23 @@ app.get("/api/persons/:id", (req, res) => {
 });
 
 // shows info for the phonebook database
-app.get("/info", (req, res) => {
-  res.send(
-    `<div>Phone book has info for ${
-      persons.length
-    } people</div> <div>${new Date().toString()}</div>`
-  );
+app.get("/info", (req, res, next) => {
+  // Phonebook.countDocuments({}, (err,result)=>{
+  //   console.log(result);
+  //   count = result;
+  // })
+
+  Phonebook.countDocuments({})
+    .then((result) => {
+      console.log(result);
+
+      res.send(
+        `<div>Phone book has info for ${result} people</div> <div>${new Date().toString()}</div>`
+      );
+    })
+    .catch((err) => {
+      next(err);
+    });
 });
 
 app.delete("/api/persons/:id", (req, res, next) => {
