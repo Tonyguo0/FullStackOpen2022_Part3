@@ -76,21 +76,10 @@ app.get("/api/persons/:id", (req, res) => {
       res.status(404).end;
     }
   });
-  // const personObj = persons.find((person) => person.id === id);
-  // if (personObj) res.json(personObj);
-  // else {
-  //   res.statusMessage = `person with id ${id} cannot be found`;
-  //   res.status(404).end();
-  // }
 });
 
 // shows info for the phonebook database
 app.get("/info", (req, res, next) => {
-  // Phonebook.countDocuments({}, (err,result)=>{
-  //   console.log(result);
-  //   count = result;
-  // })
-
   Phonebook.countDocuments({})
     .then((result) => {
       console.log(result);
@@ -129,12 +118,11 @@ const getRandomInt = (minimum, maximum) => {
   return result;
 };
 
-app.post("/api/persons", (req, res) => {
+app.post("/api/persons", (req, res, next) => {
   const body = req.body;
 
   morganSetPostToken(
     Phonebook.find({}).then((people) => {
-      // console.log(people);
       return people;
     })
   );
@@ -151,9 +139,14 @@ app.post("/api/persons", (req, res) => {
     name: body.name,
     number: body.number,
   });
-  person.save().then((p) => {
-    res.json(p);
-  });
+  person
+    .save()
+    .then((p) => {
+      res.json(p);
+    })
+    .catch((error) => {
+      next(error);
+    });
 });
 
 app.put("/api/persons/:id", (req, res, next) => {
@@ -175,9 +168,11 @@ app.put("/api/persons/:id", (req, res, next) => {
 const errorHandler = (error, request, response, next) => {
   console.log(error.name);
   if (error.name === "CastError") {
-    response
+    return response
       .status(400)
       .send({ error: `malformatted ID error: ${error.message}` });
+  } else if (error.name === "ValidationError") {
+    return response.status(400).json({ error: error.message });
   }
   next(error);
 };

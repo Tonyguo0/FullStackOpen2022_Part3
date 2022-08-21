@@ -5,10 +5,6 @@ const mongoose = require("mongoose");
 // const url = `mongodb+srv://tgo:{password}@fullstackopen-tony.3qsjiry.mongodb.net/noteApp?retryWrites=true&w=majority`;
 const url = process.env.MONGODB_URI;
 
-// console.log("connecting to", url);
-
-// `mongodb://tgo:PASSWORD@ac-qcn4pfb-shard-00-00.3qsjiry.mongodb.net:27017,ac-qcn4pfb-shard-00-01.3qsjiry.mongodb.net:27017,ac-qcn4pfb-shard-00-02.3qsjiry.mongodb.net:27017/noteApp?ssl=true&replicaSet=atlas-l55oxn-shard-0&authSource=admin&retryWrites=true&w=majority`
-
 mongoose
   .connect(url)
   .then((result) => {
@@ -19,8 +15,8 @@ mongoose
   });
 
 const noteSchema = new mongoose.Schema({
-  content: String,
-  date: Date,
+  content: { type: String, minLength: 5, required: true },
+  date: { type: Date, required: true },
   important: Boolean,
 });
 
