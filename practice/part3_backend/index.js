@@ -93,16 +93,22 @@ app.put("/api/notes/:id", (request, response, next) => {
     content: body.content,
     important: body.important,
   };
-  console.log(request.params.id)
-  Note.findByIdAndUpdate(request.params.id, note, { new: true })
+  console.log(request.params.id);
+  Note.findByIdAndUpdate(request.params.id, note, {
+    new: true,
+    runValidators: true,
+    context: "query",
+  })
     .then((updatedNote) => {
       console.log(updatedNote);
       response.json(updatedNote);
     })
-    .catch((error) => {console.log(error)});
+    .catch((error) => {
+      console.log(error);
+    });
 });
 
-app.post("/api/notes", (request, response) => {
+app.post("/api/notes", (request, response, next) => {
   // request.body has the supposed new json request object note that needs to be added using post
   const body = request.body;
 
@@ -116,9 +122,14 @@ app.post("/api/notes", (request, response) => {
     date: new Date(),
   });
 
-  note.save().then((savedNote) => {
-    response.json(savedNote);
-  });
+  note
+    .save()
+    .then((savedNote) => {
+      response.json(savedNote);
+    })
+    .catch((err) => {
+      next(err);
+    });
 });
 
 const unknownEndpoint = (request, response) => {
@@ -133,6 +144,8 @@ const errorHandler = (error, request, response, next) => {
   // console.log(error.name);
   if (error.name === "CastError") {
     return response.status(400).send({ error: "malformatted id" });
+  } else if (error.name === "ValidationError") {
+    return response.status(400).json({ error: error.message });
   }
 
   next(error);
