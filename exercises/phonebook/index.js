@@ -155,7 +155,11 @@ app.put("/api/persons/:id", (req, res, next) => {
 
   const person = { name: body.name, number: body.number };
 
-  Phonebook.findByIdAndUpdate(id, person, { new: true })
+  Phonebook.findByIdAndUpdate(id, person, {
+    new: true,
+    runValidators: true,
+    context: "query",
+  })
     .then((p) => {
       console.log(p);
       res.status(204).send(p);
