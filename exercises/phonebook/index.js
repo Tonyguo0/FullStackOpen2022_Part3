@@ -134,25 +134,42 @@ app.post("/api/persons", (req, res, next) => {
     });
   }
 
-  if (Phonebook.findOne({ name: body.name })) {
-    return res
-      .status(409)
-      .json({ error: { message: `${body.name} is already in the phonebook` } });
-  } else {
-    const person = new Phonebook({
-      // id: getRandomInt(0, Number.MAX_SAFE_INTEGER),
-      name: body.name,
-      number: body.number,
-    });
-    person
-      .save()
-      .then((p) => {
-        res.json(p);
-      })
-      .catch((error) => {
-        next(error);
+  // Phonebook.find({ name: body.name }).then((person) => {
+  //   if(person){
+
+  //   }
+  // });
+
+  // if (hello) {
+  //   console.log(`hello = ${hello}`);
+  //   return res.status(200);
+  // } else {
+  //   console.log(`no hello lol`);
+  //   console.log(`hello = ${hello}`);
+  //   return res.status(500);
+  // }
+
+  Phonebook.findOne({ name: body.name }).then((person) => {
+    if (person) {
+      return res.status(409).json({
+        error: { message: `${body.name} is already in the phonebook` },
       });
-  }
+    } else {
+      const person = new Phonebook({
+        // id: getRandomInt(0, Number.MAX_SAFE_INTEGER),
+        name: body.name,
+        number: body.number,
+      });
+      person
+        .save()
+        .then((p) => {
+          res.json(p);
+        })
+        .catch((error) => {
+          next(error);
+        });
+    }
+  });
 });
 
 app.put("/api/persons/:id", (req, res, next) => {
