@@ -13,7 +13,16 @@ mongoose
 
 const phonebookSchema = new mongoose.Schema({
   name: { type: String, minLength: 3 },
-  number: String,
+  number: {
+    type: String,
+    validate: {
+      validator: (i) => {
+        if (i.includes("-")) return /^((\d{3}|\d{2})-\d+)$/.test(i);
+      },
+      message: (props) => `${props.value} is not a valid phone number!`,
+    },
+    minLength: 8,
+  },
 });
 
 // phonebookSchema.virtual("id").get(() => {
