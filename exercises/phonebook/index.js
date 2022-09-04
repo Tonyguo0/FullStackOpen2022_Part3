@@ -102,20 +102,6 @@ app.post('/api/persons', (req, res, next) => {
         })
     }
 
-    // Phonebook.find({ name: body.name }).then((person) => {
-    //   if(person){
-
-    //   }
-    // });
-
-    // if (hello) {
-    //   console.log(`hello = ${hello}`);
-    //   return res.status(200);
-    // } else {
-    //   console.log(`no hello lol`);
-    //   console.log(`hello = ${hello}`);
-    //   return res.status(500);
-    // }
 
     Phonebook.findOne({ name: body.name }).then((person) => {
         if (person) {
@@ -177,4 +163,3 @@ const PORT = process.env.PORT
 
 app.listen(PORT, () => {
     console.log('listening on port 3001')
-})
