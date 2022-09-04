@@ -21,7 +21,7 @@
 - [x] exercise 3.19
 - [x] exercise 3.20
 - [x] exercise 3.21
-- [ ] exercise 3.22
+- [x] exercise 3.22
 
 
 ## Web-App Heroku link
