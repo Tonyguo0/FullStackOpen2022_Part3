@@ -1,4 +1,3 @@
-
 const express = require('express')
 const app = express()
 const morgan = require('morgan')
@@ -7,7 +6,6 @@ require('dotenv').config()
 
 const morganSetPostToken = () => {
     morgan.token('post', (req) => {
-
         if (!req.body.name || !req.body.number) {
             // console.log("if", body.name, body.number);
             return
@@ -34,7 +32,6 @@ app.use(express.static('build'))
 
 const Phonebook = require('./model/phonebook')
 // using Morgan to set a token functionality for the middleware to work
-
 
 app.get('/api/persons', (req, res) => {
     // res.json(persons);
@@ -85,7 +82,6 @@ app.delete('/api/persons/:id', (req, res, next) => {
         })
 })
 
-
 app.post('/api/persons', (req, res, next) => {
     const body = req.body
 
@@ -101,7 +97,6 @@ app.post('/api/persons', (req, res, next) => {
             message: 'name or number in the request is missing',
         })
     }
-
 
     Phonebook.findOne({ name: body.name }).then((person) => {
         if (person) {
@@ -162,4 +157,5 @@ app.use(errorHandler)
 const PORT = process.env.PORT
 
 app.listen(PORT, () => {
-    console.log('listening on port 3001')
+    console.log(`listening on port ${PORT} `)
+})
